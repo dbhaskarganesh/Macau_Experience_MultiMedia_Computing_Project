@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Spelling Checker</title>
+    <style>
+        body {
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Flag_of_Macau.svg/800px-Flag_of_Macau.svg.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            font-family: 'Arial', sans-serif;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 5% auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            transition: transform 0.5s ease, box-shadow 0.5s ease;
+        }
+        .container:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.2);
+        }
+        label, button {
+            display: block;
+            margin: 10px auto;
+            font-size: 20px;
+        }
+        input[type="text"] {
+            width: calc(100% - 22px);
+            margin: 0 auto;
+            padding: 10px;
+            font-size: 18px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            transition: border-color 0.3s ease;
+        }
+        input[type="text"]:focus {
+            border-color: #007bff;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        #result.correct {
+            background-color: #d4edda;
+        }
+        #result.incorrect {
+            background-color: #f8d7da;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Spelling Checker</h1>
+        <form id="spellingForm">
+            <label for="word">Enter a word:</label>
+            <input type="text" id="word" name="word" required>
+            <button type="submit">Check Spelling</button>
+        </form>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('spellingForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var word = document.getElementById('word').value;
+            var resultDiv = document.getElementById('result');
+            resultDiv.className = ''; // Reset class
+            var formData = new FormData();
+            formData.append('word', word);
+
+            fetch('/spelling_checker', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(text => {
+                resultDiv.textContent = text;
+                // Add a class based on the response for styling purposes
+                if (text.includes('correct')) {
+                    resultDiv.classList.add('correct');
+                } else {
+                    resultDiv.classList.add('incorrect');
+                }
+            })
+            .catch(error => {
+                resultDiv.textContent = 'Error: ' + error;
+                resultDiv.classList.add('incorrect');
+            });
+        });
+    </script>
+</body>
+</html>

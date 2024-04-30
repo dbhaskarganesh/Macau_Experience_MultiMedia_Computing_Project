@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sound Play</title>
+    <!-- Include Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS for styling -->
+    <style>
+        body {
+            background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Flag_of_Macau.svg/800px-Flag_of_Macau.svg.png') no-repeat center center fixed;
+            background-size: cover; /* Cover the entire page */
+            height: 100vh; /* Full height */
+            color: white; /* Change text color for better visibility */
+        }
+        .container {
+            max-width: 600px;
+            padding-top: 50px;
+            position: relative; /* Enable positioning */
+        }
+        #audioPlayerContainer {
+            position: absolute; /* Position the audio player container */
+            bottom: 20px; /* Adjust bottom distance */
+            left: 50%; /* Center horizontally */
+            transform: translateX(-50%); /* Center horizontally */
+            width: 100%; /* Make full width */
+            display: none; /* Hide initially */
+        }
+        #audioPlayer {
+            width: 100%;
+        }
+        #subtitles {
+            margin-top: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        #soundLink {
+            color: #ffffff;
+            text-decoration: underline;
+            cursor: pointer;
+            display: block; /* Make it a block element */
+            text-align: center; /* Center align */
+            margin-bottom: 20px; /* Add space below */
+        }
+        #pauseButton {
+            position: absolute; /* Position the pause button */
+            bottom: 40px; /* Adjust bottom distance */
+            left: 50%; /* Center horizontally */
+            transform: translateX(-50%); /* Center horizontally */
+            display: none; /* Initially hidden */
+        }
+        #progressBar {
+            width: 100%;
+            height: 10px;
+            background-color: #ffffff;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+        #progressBarFill {
+            height: 100%;
+            background-color: #007bff;
+            border-radius: 5px;
+            width: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center mb-4">Sound Play</h1>
+        <!-- Link to the sound file -->
+        <div id="soundLink">Play Sound</div>
+        <!-- Audio player container -->
+        <div id="audioPlayerContainer">
+            <audio id="audioPlayer" controls>
+                <source src="{{ url_for('static', filename='sounds/audio.mp3') }}" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+            <!-- Progress bar -->
+            <div id="progressBar">
+                <div id="progressBarFill"></div>
+            </div>
+        </div>
+        <!-- Subtitles display container -->
+        <div id="subtitles"></div>
+    </div>
+
+    <!-- Include Bootstrap JS and custom JS for functionality -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Function to handle playing the sound file
+        document.getElementById('soundLink').addEventListener('click', function() {
+            // Show audio player container
+            document.getElementById('audioPlayerContainer').style.display = 'block';
+
+            // Play or pause audio on click
+            const audio = document.getElementById('audioPlayer');
+            if (audio.paused) {
+                audio.play();
+            } else {
+                audio.pause();
+            }
+
+            // Update progress bar continuously
+            const progressBarFill = document.getElementById('progressBarFill');
+            const updateProgressBar = () => {
+                const progress = (audio.currentTime / audio.duration) * 100;
+                progressBarFill.style.width = progress + '%';
+                if (progress === 100) {
+                    clearInterval(progressBarInterval);
+                }
+            };
+            const progressBarInterval = setInterval(updateProgressBar, 100);
+
+            // Show pause button
+            document.getElementById('pauseButton').style.display = 'block';
+        });
+    </script>
+     </div>
+     <div class="text-center mt-4">
+         <a href="/" class="btn btn-primary">Return Home</a>
+     </div>
+</body>
+</html>
